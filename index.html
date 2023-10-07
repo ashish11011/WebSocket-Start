@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple chat</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body{
+        width: 40%;
+        margin: auto;
+    }
+    #chat{
+        height: 90vh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    p{
+        background-color: #efefef;
+        width: 100%;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        margin: 5px 0 5px 0;
+        padding: 0 6px 0 6px;
+    }
+
+    .right{
+        justify-content: end;
+    }
+
+    .left{
+        justify-content: start;
+    }
+    .center{
+        justify-content: center;
+    }
+
+    input[type=text] {
+        width: 80%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        outline: none;
+    }
+
+    input[type=text]:focus {
+        border: 3px solid #65f7ff;
+    }
+
+    button {
+        background-color: gray; /* Green */
+        border-radius: 12px;
+        height: 3rem;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
+
+    button:active{
+        transform: translateY(4px);
+    }
+
+    @media (max-width: 1400px) {
+        body {
+            width: 80%;
+        }
+    }
+    @media (max-width: 800px) {
+        body {
+            width: 90%;
+        }
+    }
+    @media (max-width: 585px) {
+        body {
+            width: 95%;
+        }
+    button {
+        background-color: gray; /* Green */
+        border-radius: 6px;
+        height: 2.7rem;
+        border: none;
+        color: white;
+        padding: 5px 12px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 8px;
+    }
+}
+
+</style>
+<body>
+    <div id="chat" >
+        <h3>Chat here:</h3>
+    </div>
+    <!-- <h1>Say hello again</h1> -->
+
+    <form id="form">
+        <input id="inp" type="text">
+        <button type="submit" id="btnSub" >Send</button>
+    </form>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script> -->
+    <!-- <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script> -->
+    <script>
+        var socket = io();
+
+        const form = document.getElementById("form");
+        form.addEventListener("submit",(event)=>{
+            event.preventDefault();
+            const inp = document.getElementById("inp");
+            const mes = inp.value;
+            socket.emit("mes",mes)
+            console.log( mes +  " Send");
+            inp.value = "";
+
+            const chat = document.getElementById("chat");
+            const p = document.createElement("p");
+            p.textContent = mes;
+            p.classList = "right";
+            chat.append(p);
+        });
+
+
+        socket.on('mes', (mes)=>{
+            const chat = document.getElementById("chat");
+            const p = document.createElement("p");
+            p.textContent = mes;
+            chat.append(p);
+        });
+
+        socket.on("dis" , mes =>{
+            const chat = document.getElementById("chat");
+            const p = document.createElement("p");
+            p.textContent = "One user left";
+            p.classList = "center"; 
+            chat.append(p);
+        });
+    </script>
+</body>
+</html>
